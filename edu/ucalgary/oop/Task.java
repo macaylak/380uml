@@ -20,7 +20,7 @@ public class Task {
 
     public void createConnection() {
         try {
-            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "ensf380", "ensf380");
+            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "ensf380root");
         } catch (SQLException e) {
             e.printStackTrace();
         }

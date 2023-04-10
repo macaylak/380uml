@@ -15,7 +15,7 @@ import java.util.Set;
 public class Schedule {
 
     private  Connection dbConnect;
-
+    
     static HashMap<Integer, List<Map<String, String>>> mainHashmapWithTasksAndStartHours;
 
     public Schedule() {
@@ -35,7 +35,7 @@ public class Schedule {
 
     public void createConnection() {
         try {
-            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "ensf380", "ensf380");
+            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "ensf380root");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -172,34 +172,123 @@ public class Schedule {
         mainHashmapWithTasksAndStartHours.put(startHour, taskList);
     }
 
-    public static void addCleaningTimesToHashmap(Schedule db) {
+    public static void addCleaningTimesToHashmap(Schedule db, Animal animalInfo) {
         HashMap<Integer, Integer> minutesLeftmap = getMinutesLeftMap(Schedule.getMainHashmapWithTasksandStartHours());
         Set<AnimalType> insertedAnimals = new HashSet<>();
-    
-        for (int startHour = 0; startHour < 24; startHour++) {
-            int minutesLeft = minutesLeftmap.getOrDefault(startHour, 0);
-    
-            for (AnimalType animal : AnimalType.values()) {
-                if (insertedAnimals.contains(animal)) {
-                    continue; // skip animals that have already been inserted
-                }
-    
-                int cleaningTime = animal.getCleaningTime();
-                if (minutesLeft > 0 && minutesLeft >= cleaningTime) {
-                    db.insertCleaningToHashMap(startHour, cleaningTime, animal);
-                    insertedAnimals.add(animal);
+        List<String> coyoteNicknames = animalInfo.getCoyoteNicknames();
+        List<String> porcupineNicknames = animalInfo.getPorcupineNicknames();
+
+
+        int cleaningTimeCoyote = AnimalType.COYOTE.getCleaningTime();
+        AnimalType animalTypeCoyote = AnimalType.COYOTE;
+        int startHour = 0;
+        AnimalType animalTypePorcupine = AnimalType.PORCUPINE;
+        int cleaningTimePorcupine = AnimalType.PORCUPINE.getCleaningTime();
+        for (String nickname : coyoteNicknames) {
+            while (startHour < 24) {
+                int minutesLeft = minutesLeftmap.getOrDefault(startHour, 60);
+                if (minutesLeft >= cleaningTimeCoyote) {
+                    insertCleaningToHashMap(startHour, cleaningTimeCoyote, animalTypeCoyote, nickname);
+                    minutesLeftmap.put(startHour, minutesLeft - cleaningTimeCoyote);
+                    insertedAnimals.add(animalTypeCoyote);
                     break;
+                } else {
+                    startHour++;
                 }
             }
+            if (insertedAnimals.size() == AnimalType.values().length) {
+                break;
+            }
         }
+        for (String nickname : porcupineNicknames) {
+            while (startHour < 24) {
+                int minutesLeft = minutesLeftmap.getOrDefault(startHour, 60);
+                if (minutesLeft >= cleaningTimePorcupine) {
+                    insertCleaningToHashMap(startHour, cleaningTimePorcupine, animalTypePorcupine, nickname);
+                    minutesLeftmap.put(startHour, minutesLeft - cleaningTimePorcupine);
+                    insertedAnimals.add(animalTypePorcupine);
+                    break;
+                } else {
+                    startHour++;
+                }
+            }
+            if (insertedAnimals.size() == AnimalType.values().length) {
+                break;
+            }
+        }
+
+        //fox cleaning 
+        List<String> foxNicknames = animalInfo.getFoxNicknames();
+        int cleaningTimeFox = AnimalType.FOX.getCleaningTime();
+
+        AnimalType animalTypeFox = AnimalType.FOX;
+        for (String nickname : foxNicknames) {
+            while (startHour < 24) {
+                int minutesLeft = minutesLeftmap.getOrDefault(startHour, 60);
+                if (minutesLeft >= cleaningTimeFox) {
+                    insertCleaningToHashMap(startHour, cleaningTimeFox, animalTypeFox, nickname);
+                    minutesLeftmap.put(startHour, minutesLeft - cleaningTimeFox);
+                    insertedAnimals.add(animalTypeFox);
+                    break;
+                } else {
+                    startHour++;
+                }
+            }
+            if (insertedAnimals.size() == AnimalType.values().length) {
+                break;
+            }
+        }
+
+        //raccoon cleaning
+        List<String> raccoonNicknames = animalInfo.getRaccoonNicknames();
+        int cleaningTimeRaccoon = AnimalType.RACCOON.getCleaningTime();
+
+        AnimalType animalTypeRaccoon = AnimalType.RACCOON;
+        for (String nickname : raccoonNicknames) {
+            while (startHour < 24) {
+                int minutesLeft = minutesLeftmap.getOrDefault(startHour, 60);
+                if (minutesLeft >= cleaningTimeRaccoon) {
+                    insertCleaningToHashMap(startHour, cleaningTimeRaccoon, animalTypeRaccoon, nickname);
+                    minutesLeftmap.put(startHour, minutesLeft - cleaningTimeRaccoon);
+                    insertedAnimals.add(animalTypeRaccoon);
+                    break;
+                } else {
+                    startHour++;
+                }
+            }
+            if (insertedAnimals.size() == AnimalType.values().length) {
+                break;
+            }
+        }
+        List<String> Beaversicknames = animalInfo.getBeaverNicknames();
+        int cleaningTimeBeavers= AnimalType.BEAVER.getCleaningTime();
+
+        AnimalType animalTypeBeaver = AnimalType.BEAVER;
+        for (String nickname : Beaversicknames) {
+            while (startHour < 24) {
+                int minutesLeft = minutesLeftmap.getOrDefault(startHour, 60);
+                if (minutesLeft >= cleaningTimeBeavers) {
+                    insertCleaningToHashMap(startHour, cleaningTimeBeavers, animalTypeBeaver, nickname);
+                    minutesLeftmap.put(startHour, minutesLeft - cleaningTimeBeavers);
+                    insertedAnimals.add(animalTypeBeaver);
+                    break;
+                } else {
+                    startHour++;
+                }
+            }
+            if (insertedAnimals.size() == AnimalType.values().length) {
+                break;
+            }
+        }
+        System.out.println(minutesLeftmap);
     }
     
     public static HashMap<Integer, List<Map<String, String>>> getMainHashmapWithTasksandStartHours(){
         return mainHashmapWithTasksAndStartHours;
     }
 
-    public void insertCleaningToHashMap(int startHour, int cleaningTime, AnimalType animalType) {
-        String description = "Cleaning " + animalType.name().toLowerCase();
+    public static void insertCleaningToHashMap(int startHour, int cleaningTime, AnimalType animalType, String nickname) {
+        String description = "Cleaning " + animalType.name().toLowerCase() + " " + nickname;
         Map<String, String> task = new HashMap<>();
         task.put("Description", description);
         task.put("Duration", Integer.toString(cleaningTime));
@@ -208,6 +297,7 @@ public class Schedule {
         taskList.add(task);
     
         mainHashmapWithTasksAndStartHours.put(startHour, taskList);
+
     }
 
     public static boolean checkDuration(HashMap<Integer, List<Map<String, String>>> taskMap, int startHour) {
@@ -249,4 +339,6 @@ public class Schedule {
         }
         return minutesLeftMap;
     }
+
+    
 }

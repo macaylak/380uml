@@ -72,7 +72,7 @@ public class ScheduleAppGUI extends JFrame {
                 Task.feedingTimeBeaver(db, animalInfo);
                 Task.feedingTimeRaccoon(db, animalInfo);
                 Task.feedingTimeFox(db, animalInfo);
-                Schedule.addCleaningTimesToHashmap(db);
+                Schedule.addCleaningTimesToHashmap(db,animalInfo);
 
                 // if an hour contains more than 120 minutes of tasks, display the error message
                 // "It was impossible to complete the schedule due to too many events scheduled at (FullStartHour). Please shift some of the following activities: (TasksExceedingTimeLimit)"
