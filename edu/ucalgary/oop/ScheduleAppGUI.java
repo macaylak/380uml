@@ -66,12 +66,26 @@ public class ScheduleAppGUI extends JFrame {
                 db.createConnection();
                 Task Task = new Task();
 
-                // Call feedingTimeFox() method and pass db as a parameter
-                Task.feedingTimeCoyote(db, animalInfo);
-                Task.feedingTimePorcupine(db, animalInfo);
-                Task.feedingTimeBeaver(db, animalInfo);
-                Task.feedingTimeRaccoon(db, animalInfo);
-                Task.feedingTimeFox(db, animalInfo);
+                try {
+                    Task.feedingTimeCoyote(db, animalInfo);
+                } catch (InsufficientFeedingTimeException error) {
+                }  
+                try {
+                    Task.feedingTimeFox(db, animalInfo);
+                } catch (InsufficientFeedingTimeException error) {
+                } 
+                try {
+                    Task.feedingTimeRaccoon(db, animalInfo);
+                } catch (InsufficientFeedingTimeException error) {
+                } 
+                try {
+                    Task.feedingTimeBeaver(db, animalInfo);
+                } catch (InsufficientFeedingTimeException error) {
+                } 
+                try {
+                    Task.feedingTimePorcupine(db, animalInfo);
+                } catch (InsufficientFeedingTimeException error) {
+                }                                
                 Schedule.addCleaningTimesToHashmap(db,animalInfo);
 
                 // if an hour contains more than 120 minutes of tasks, display the error message

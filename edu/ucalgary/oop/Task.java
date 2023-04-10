@@ -20,7 +20,7 @@ public class Task {
 
     public void createConnection() {
         try {
-            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "ensf380root");
+            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "ensf380", "ensf380");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -50,7 +50,13 @@ public class Task {
         return Schedule.mainHashmapWithTasksAndStartHours;
     }
     
-    public static void feedingTimeCoyote(Schedule db, Animal animalInfo) {
+    public static void feedingTimeCoyote(Schedule db, Animal animalInfo) throws IllegalArgumentException, InsufficientFeedingTimeException {
+        if (db == null) {
+            throw new IllegalArgumentException("Database object is empty.");
+        }
+        if (animalInfo == null) {
+            throw new IllegalArgumentException("Animal object is empty.");
+        }
         HashMap<Integer, Integer> minutesLeftmap = Schedule.getMinutesLeftMap(Schedule.getMainHashmapWithTasksandStartHours());
         int numCoyotes = animalInfo.getNumCoyotes();
         List<String> coyoteNicknames = animalInfo.getCoyoteNicknames();
@@ -81,11 +87,20 @@ public class Task {
             int totalFeedingTimeInHour21 = numCoyotesInHour21 * feedingTimePerCoyote + feedingPrepTime;
             db.insertFeedingCoyotesToHashmap(21, totalFeedingTimeInHour21, numCoyotesInHour21, coyoteNicknames.subList(numCoyotesInHour19 + numCoyotesInHour20, numCoyotesInHour19 + numCoyotesInHour20 + numCoyotesInHour21));
         }
+        if (numCoyotes > 0 && minutesLeft19 < feedingPrepTime + numCoyotes * feedingTimePerCoyote && minutesLeft20 < feedingPrepTime + numCoyotes * feedingTimePerCoyote && minutesLeft21 < feedingPrepTime + numCoyotes * feedingTimePerCoyote) {
+            throw new InsufficientFeedingTimeException("There is not enough time to feed all of the coyotes in the designated times.");
+        }      
     }
-
-    public void feedingTimeFox(Schedule db, Animal animalInfo) {
-        HashMap<Integer, Integer> minutesLeftmap = Schedule.getMinutesLeftMap(Schedule.getMainHashmapWithTasksandStartHours());
     
+
+    public void feedingTimeFox(Schedule db, Animal animalInfo) throws IllegalArgumentException, InsufficientFeedingTimeException {
+        if (db == null) {
+            throw new IllegalArgumentException("Database object is empty.");
+        }
+        if (animalInfo == null) {
+            throw new IllegalArgumentException("Animal object is empty.");
+        }
+        HashMap<Integer, Integer> minutesLeftmap = Schedule.getMinutesLeftMap(Schedule.getMainHashmapWithTasksandStartHours());
         int numFoxes = animalInfo.getNumFoxes();
         List<String> foxNicknames = animalInfo.getFoxNicknames();
         int feedingPrepTime = AnimalType.FOX.getFeedingPrepTime();
@@ -115,9 +130,18 @@ public class Task {
             int totalFeedingTimeInHour2 = numFoxesInHour2 * feedingTimePerFox + feedingPrepTime;
             db.insertFeedingFoxToHashmap(2, totalFeedingTimeInHour2, numFoxesInHour2, foxNicknames.subList(numFoxesInHour0 + numFoxesInHour1, numFoxesInHour0 + numFoxesInHour1 + numFoxesInHour2));
         }
+        if (numFoxes > 0 && minutesLeft0 < feedingPrepTime + numFoxes * feedingTimePerFox && minutesLeft1 < feedingPrepTime + numFoxes * feedingTimePerFox && minutesLeft2 < feedingPrepTime + numFoxes * feedingTimePerFox) {
+            throw new InsufficientFeedingTimeException("There is not enough time to feed all of the foxes in the designated times.");
+        }
     }
-
-    public void feedingTimePorcupine(Schedule db, Animal animalInfo) {
+    
+    public void feedingTimePorcupine(Schedule db, Animal animalInfo) throws IllegalArgumentException, InsufficientFeedingTimeException {
+        if (db == null) {
+            throw new IllegalArgumentException("Database object is empty.");
+        }
+        if (animalInfo == null) {
+            throw new IllegalArgumentException("Animal object is empty.");
+        }
         HashMap<Integer, Integer> minutesLeftmap = Schedule.getMinutesLeftMap(Schedule.getMainHashmapWithTasksandStartHours());
         int numPorcupines = animalInfo.getNumPorcupines();
         List<String> porcupineNicknames = animalInfo.getPorcupineNicknames();
@@ -148,11 +172,19 @@ public class Task {
             int totalFeedingTimeInHour21 = numPorcupineInHour21 * feedingTimePerPorcupine + feedingPrepTime;
             db.insertFeedingPorcupinesToHashmap(21, totalFeedingTimeInHour21, numPorcupineInHour21, porcupineNicknames.subList(numPorcupineInHour19 + numPorcupineInHour20, numPorcupineInHour19 + numPorcupineInHour20 + numPorcupineInHour21));
         }
+        if (numPorcupines > 0 && minutesLeft19 < feedingPrepTime + numPorcupines * feedingTimePerPorcupine && minutesLeft20 < feedingPrepTime + numPorcupines * feedingTimePerPorcupine && minutesLeft21 < feedingPrepTime + numPorcupines * feedingTimePerPorcupine) {
+            throw new InsufficientFeedingTimeException("There is not enough time to feed all of the porcupines in the designated times.");
+        }        
     }
 
-    public void feedingTimeBeaver(Schedule db, Animal animalInfo) {
+    public void feedingTimeBeaver(Schedule db, Animal animalInfo) throws IllegalArgumentException, InsufficientFeedingTimeException {
+        if (db == null) {
+            throw new IllegalArgumentException("Database object is empty.");
+        }
+        if (animalInfo == null) {
+            throw new IllegalArgumentException("Animal object is empty.");
+        }
         HashMap<Integer, Integer> minutesLeftmap = Schedule.getMinutesLeftMap(Schedule.getMainHashmapWithTasksandStartHours());
-    
         int numBeavers = animalInfo.getNumBeavers();
         List<String> beaverNicknames = animalInfo.getBeaverNicknames();
         int feedingPrepTime = AnimalType.BEAVER.getFeedingPrepTime();
@@ -182,13 +214,20 @@ public class Task {
             int totalFeedingTimeInHour10 = numBeaversInHour10 * feedingTimePerBeaver + feedingPrepTime;
             db.insertFeedingBeaversToHashmap(10, totalFeedingTimeInHour10, numBeaversInHour10, beaverNicknames.subList(numBeaversInHour8 + numBeaversInHour9, numBeaversInHour8 + numBeaversInHour9 + numBeaversInHour10));
         }
-    
+        if (numBeavers > 0 && minutesLeft8 < feedingPrepTime + numBeavers * feedingTimePerBeaver && minutesLeft9 < feedingPrepTime + numBeavers * feedingTimePerBeaver && minutesLeft10 < feedingPrepTime + numBeavers * feedingTimePerBeaver) {
+            throw new InsufficientFeedingTimeException("There is not enough time to feed all of the beavers in the designated times.");
+        }
     }
     
     
-    public void feedingTimeRaccoon(Schedule db, Animal animalInfo) {
+    public void feedingTimeRaccoon(Schedule db, Animal animalInfo) throws IllegalArgumentException, InsufficientFeedingTimeException {
+        if (db == null) {
+            throw new IllegalArgumentException("Database object is empty.");
+        }
+        if (animalInfo == null) {
+            throw new IllegalArgumentException("Animal object is empty.");
+        }
         HashMap<Integer, Integer> minutesLeftmap = Schedule.getMinutesLeftMap(Schedule.getMainHashmapWithTasksandStartHours());
-            
         int numRaccoons = animalInfo.getNumRaccoons();
         List<String> raccoonNicknames = animalInfo.getRaccoonNicknames();
         int feedingPrepTime = AnimalType.RACCOON.getFeedingPrepTime();
@@ -218,24 +257,37 @@ public class Task {
             int totalFeedingTimeInHour2 = numRaccoonsInHour2 * feedingTimePerRaccoon + feedingPrepTime;
             db.insertFeedingRaccoonsToHashmap(2, totalFeedingTimeInHour2, numRaccoonsInHour2, raccoonNicknames.subList(numRaccoonsInHour0 + numRaccoonsInHour1, numRaccoonsInHour0 + numRaccoonsInHour1 + numRaccoonsInHour2));
          }
+         if (numRaccoons > 0 && minutesLeft0 < feedingPrepTime + numRaccoons * feedingTimePerRaccoon && minutesLeft1 < feedingPrepTime + numRaccoons * feedingTimePerRaccoon && minutesLeft2 < feedingPrepTime + numRaccoons * feedingTimePerRaccoon) {
+            throw new InsufficientFeedingTimeException("There is not enough time to feed all of the raccoons in the designated times.");
+        }        
     }
 
-
-    public static boolean checkDuration(Map<Integer, List<Map<String, String>>> mainHashMapWithTasksandStartHours2, int startHour) {
-        int totalDuration = 0;
-    
+    public static boolean checkDuration(Map<Integer, List<Map<String, String>>> mainHashMapWithTasksandStartHours2, int startHour) throws IllegalArgumentException {
+        if (startHour < 0 || startHour > 23) {
+            throw new IllegalArgumentException("Start hour must be between 0 and 23 inclusive.");
+        }
+        
         List<Map<String, String>> taskList = mainHashMapWithTasksandStartHours2.getOrDefault(startHour, new ArrayList<>());
-    
+        int totalDuration = 0;
+        
         for (Map<String, String> task : taskList) {
-            int duration = Integer.parseInt(task.get("Duration"));
+            int duration;
+            try {
+                duration = Integer.parseInt(task.get("Duration"));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid duration for task: " + task.get("Name"));
+            }
+            if (duration < 0) {
+                throw new IllegalArgumentException("Duration must be non-negative for task: " + task.get("Name"));
+            }
             totalDuration += duration;
         }
-    
+        
         if (totalDuration > 60) {
             return true;
         } else {
             return false;
         }
-    }     
+    }      
 }
     
