@@ -75,27 +75,56 @@ public class Schedule {
         }
         Schedule.mainHashmapWithTasksAndStartHours = taskMap;
     }
-
     public void insertFeedingCoyotesToHashmap(int startHour, int feedingDuration, int numAnimal, List<String> coyoteNicknames) {
-        String coyoteNames = String.join(", ", coyoteNicknames);
-        String description = "Feeding - Coyote (" + numAnimal + ": " + coyoteNames + ")";
+        if (coyoteNicknames == null) {
+            throw new NullPointerException("coyoteNicknames cannot be null");
+        }
     
-        // Create a new task map for the feeding task
-        Map<String, String> task = new HashMap<>();
-        task.put("Description", description);
-        task.put("Duration", Integer.toString(feedingDuration));
+        if (startHour < 0) {
+            throw new IllegalArgumentException("startHour cannot be negative");
+        }
     
-        // Get the task list for the specified start hour from the main hashmap
-        List<Map<String, String>> taskList = mainHashmapWithTasksAndStartHours.getOrDefault(startHour, new ArrayList<>());
+        if (feedingDuration <= 0) {
+            throw new IllegalArgumentException("feedingDuration must be greater than zero");
+        }
     
-        // Add the new feeding task to the task list
-        taskList.add(task);
-    
-        // Update the main hashmap with the modified task list
-        mainHashmapWithTasksAndStartHours.put(startHour, taskList);
+        try {
+            String coyoteNames = String.join(", ", coyoteNicknames);
+            String description = "Feeding - Coyote (" + numAnimal + ": " + coyoteNames + ")";
+        
+            // Create a new task map for the feeding task
+            Map<String, String> task = new HashMap<>();
+            task.put("Description", description);
+            task.put("Duration", Integer.toString(feedingDuration));
+        
+            // Get the task list for the specified start hour from the main hashmap
+            List<Map<String, String>> taskList = mainHashmapWithTasksAndStartHours.getOrDefault(startHour, new ArrayList<>());
+        
+            // Add the new feeding task to the task list
+            taskList.add(task);
+        
+            // Update the main hashmap with the modified task list
+            mainHashmapWithTasksAndStartHours.put(startHour, taskList);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while inserting feeding coyotes task into hashmap", e);
+        }
     }
     
-    public void insertFeedingFoxToHashmap(int startHour, int feedingDuration, int numAnimal, List<String> foxNicknames) {
+    
+    public void insertFeedingFoxToHashmap(int startHour, int feedingDuration, int numAnimal, List<String> foxNicknames) throws IllegalArgumentException {
+        if(startHour < 0 || startHour > 23) {
+            throw new IllegalArgumentException("Invalid start hour: " + startHour);
+        }
+        if(feedingDuration <= 0) {
+            throw new IllegalArgumentException("Feeding duration must be positive: " + feedingDuration);
+        }
+        if(numAnimal <= 0) {
+            throw new IllegalArgumentException("Number of animals must be positive: " + numAnimal);
+        }
+        if(foxNicknames == null || foxNicknames.isEmpty()) {
+            throw new IllegalArgumentException("List of fox nicknames cannot be null or empty");
+        }
+        
         String foxNames = String.join(", ", foxNicknames);
         String description = "Feeding - Fox (" + numAnimal + ": " + foxNames + ")";
         
@@ -113,27 +142,51 @@ public class Schedule {
         // Update the main hashmap with the modified task list
         mainHashmapWithTasksAndStartHours.put(startHour, taskList);
     }
-
-    public void insertFeedingBeaversToHashmap(int startHour, int feedingDuration, int numAnimal, List<String> beaverNicknames) {
+    public void insertFeedingBeaversToHashmap(int startHour, int feedingDuration, int numAnimal, List<String> beaverNicknames) throws IllegalArgumentException {
+        if(startHour < 0 || startHour > 23) {
+            throw new IllegalArgumentException("Start hour must be between 0 and 23 inclusive.");
+        }
+        if(feedingDuration < 1 || feedingDuration > 24) {
+            throw new IllegalArgumentException("Feeding duration must be between 1 and 24 hours inclusive.");
+        }
+        if(numAnimal < 1) {
+            throw new IllegalArgumentException("Number of animals must be greater than 0.");
+        }
+        if(beaverNicknames == null || beaverNicknames.isEmpty()) {
+            throw new IllegalArgumentException("Beaver nicknames cannot be null or empty.");
+        }
+        
         String beaverNames = String.join(", ", beaverNicknames);
         String description = "Feeding - Beaver (" + numAnimal + ": " + beaverNames + ")";
-    
+        
         // Create a new task map for the feeding task
         Map<String, String> task = new HashMap<>();
         task.put("Description", description);
         task.put("Duration", Integer.toString(feedingDuration));
-    
+        
         // Get the task list for the specified start hour from the main hashmap
         List<Map<String, String>> taskList = mainHashmapWithTasksAndStartHours.getOrDefault(startHour, new ArrayList<>());
-    
+        
         // Add the new feeding task to the task list
         taskList.add(task);
-    
+        
         // Update the main hashmap with the modified task list
         mainHashmapWithTasksAndStartHours.put(startHour, taskList);
-    }    
-
-    public void insertFeedingPorcupinesToHashmap(int startHour, int feedingDuration, int numAnimal, List<String> porcupineNicknames) {
+    }
+    public void insertFeedingPorcupinesToHashmap(int startHour, int feedingDuration, int numAnimal, List<String> porcupineNicknames) throws IllegalArgumentException {
+        if (startHour < 0 || startHour > 23) {
+            throw new IllegalArgumentException("Start hour must be between 0 and 23 (inclusive).");
+        }
+        if (feedingDuration <= 0) {
+            throw new IllegalArgumentException("Feeding duration must be greater than 0.");
+        }
+        if (numAnimal <= 0) {
+            throw new IllegalArgumentException("Number of animals must be greater than 0.");
+        }
+        if (porcupineNicknames.isEmpty()) {
+            throw new IllegalArgumentException("List of porcupine nicknames cannot be empty.");
+        }
+    
         String porcupineNames = String.join(", ", porcupineNicknames);
         String description = "Feeding - Porcupine (" + numAnimal + ": " + porcupineNames + ")";
         
@@ -151,9 +204,20 @@ public class Schedule {
         // Update the main hashmap with the modified task list
         mainHashmapWithTasksAndStartHours.put(startHour, taskList);
     }
-    
-
-    public void insertFeedingRaccoonsToHashmap(int startHour, int feedingDuration, int numAnimal, List<String> raccoonNames) {
+    public void insertFeedingRaccoonsToHashmap(int startHour, int feedingDuration, int numAnimal, List<String> raccoonNames) throws IllegalArgumentException {
+        if (startHour < 0 || startHour > 23) {
+            throw new IllegalArgumentException("Invalid start hour. Must be between 0 and 23.");
+        }
+        if (feedingDuration <= 0) {
+            throw new IllegalArgumentException("Invalid feeding duration. Must be greater than 0.");
+        }
+        if (numAnimal <= 0) {
+            throw new IllegalArgumentException("Invalid number of animals. Must be greater than 0.");
+        }
+        if (raccoonNames == null || raccoonNames.isEmpty()) {
+            throw new IllegalArgumentException("Invalid raccoon names. List cannot be null or empty.");
+        }
+        
         String names = String.join(", ", raccoonNames);
         String description = "Feeding - Raccoon (" + numAnimal + ": " + names + ")";
         
@@ -171,8 +235,9 @@ public class Schedule {
         // Update the main hashmap with the modified task list
         mainHashmapWithTasksAndStartHours.put(startHour, taskList);
     }
+    
 
-    public static void addCleaningTimesToHashmap(Schedule db, Animal animalInfo) {
+    public static void addCleaningTimesToHashmap(Schedule db, Animal animalInfo) throws IllegalArgumentException, NullPointerException {
         HashMap<Integer, Integer> minutesLeftmap = getMinutesLeftMap(Schedule.getMainHashmapWithTasksandStartHours());
         Set<AnimalType> insertedAnimals = new HashSet<>();
         List<String> coyoteNicknames = animalInfo.getCoyoteNicknames();
@@ -280,15 +345,28 @@ public class Schedule {
                 break;
             }
         }
-        System.out.println(minutesLeftmap);
+      
     }
     
     public static HashMap<Integer, List<Map<String, String>>> getMainHashmapWithTasksandStartHours(){
         return mainHashmapWithTasksAndStartHours;
     }
 
-    public static void insertCleaningToHashMap(int startHour, int cleaningTime, AnimalType animalType, String nickname) {
-        String description = "Cleaning " + animalType.name().toLowerCase() + " " + nickname;
+    public static void insertCleaningToHashMap(int startHour, int cleaningTime, AnimalType animalType, String nickname) throws IllegalArgumentException {
+        if (startHour < 0 || startHour > 23) {
+            throw new IllegalArgumentException("Start hour must be between 0 and 23");
+        }
+        if (cleaningTime < 0) {
+            throw new IllegalArgumentException("Cleaning time must be a positive integer");
+        }
+        if (animalType == null) {
+            throw new IllegalArgumentException("Animal type cannot be null");
+        }
+        if (nickname == null || nickname.isEmpty()) {
+            throw new IllegalArgumentException("Nickname cannot be null or empty");
+        }
+        
+        String description = "Cage Cleaning for " + animalType.name().toLowerCase() + " " + nickname;
         Map<String, String> task = new HashMap<>();
         task.put("Description", description);
         task.put("Duration", Integer.toString(cleaningTime));
@@ -297,16 +375,24 @@ public class Schedule {
         taskList.add(task);
     
         mainHashmapWithTasksAndStartHours.put(startHour, taskList);
-
     }
-
-    public static boolean checkDuration(HashMap<Integer, List<Map<String, String>>> taskMap, int startHour) {
+    
+    public static boolean checkDuration(HashMap<Integer, List<Map<String, String>>> taskMap, int startHour) throws IllegalArgumentException {
         int totalDuration = 0;
     
         List<Map<String, String>> taskList = taskMap.getOrDefault(startHour, new ArrayList<>());
     
         for (Map<String, String> task : taskList) {
-            int duration = Integer.parseInt(task.get("Duration"));
+            String durationStr = task.get("Duration");
+            if (durationStr == null) {
+                throw new IllegalArgumentException("Duration missing for task at start hour " + startHour);
+            }
+            int duration;
+            try {
+                duration = Integer.parseInt(durationStr);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid duration for task at start hour " + startHour + ": " + durationStr, e);
+            }
             totalDuration += duration;
         }
     
@@ -317,15 +403,15 @@ public class Schedule {
         }
     }
     
-
-    public static HashMap<Integer, Integer> getMinutesLeftMap(HashMap<Integer, List<Map<String, String>>> taskMap) {
+    public static HashMap<Integer, Integer> getMinutesLeftMap(HashMap<Integer, List<Map<String, String>>> taskMap) throws NullPointerException, NumberFormatException {
         HashMap<Integer, Integer> minutesLeftMap = new HashMap<>();
         for (int i = 0; i < 24; i++) {
             if (taskMap.containsKey(i)) {
                 int totalDuration = 0;
                 List<Map<String, String>> taskList = taskMap.get(i);
                 for (Map<String, String> task : taskList) {
-                    totalDuration += Integer.parseInt(task.get("Duration"));
+                    int duration = Integer.parseInt(task.get("Duration"));
+                    totalDuration += duration;
                 }
                 if (totalDuration < 60) {
                     int minutesLeft = 60 - totalDuration;
@@ -339,6 +425,7 @@ public class Schedule {
         }
         return minutesLeftMap;
     }
+    
 
     
 }
