@@ -1,6 +1,7 @@
 package edu.ucalgary.oop;
 
 import java.sql.*;
+import java.util.*;
 
 public class Animal {
     private static Connection dbConnect;
@@ -13,6 +14,11 @@ public class Animal {
     private static int numBeavers;
     private static int numFoxes;
     private static int numPorcupines;
+    private List<String> coyoteNicknames = new ArrayList<String>();
+    private List<String> raccoonNicknames = new ArrayList<String>();
+    private List<String> beaverNicknames = new ArrayList<String>();
+    private List<String> foxNicknames = new ArrayList<String>();
+    private List<String> porcupineNicknames = new ArrayList<String>();
 
     public Animal() {
         createConnection();
@@ -21,7 +27,7 @@ public class Animal {
 
     public void createConnection() {
         try {
-            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "sqlpassword");
+            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "ensf380", "ensf380");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -31,56 +37,52 @@ public class Animal {
         try {
             Statement myStmt = dbConnect.createStatement();
             resultsAnimals = myStmt.executeQuery("SELECT * FROM animals");
-            
-            ResultSet rsCoyotes = myStmt.executeQuery("SELECT COUNT(*) FROM ANIMALS WHERE AnimalSpecies = 'coyote'");
-            if (rsCoyotes.next()) {
-                numCoyotes = rsCoyotes.getInt(1);
+    
+            while (resultsAnimals.next()) {
+                String species = resultsAnimals.getString("AnimalSpecies");
+                String nickname = resultsAnimals.getString("AnimalNickname");
+                
+                switch (species) {
+                    case "coyote":
+                        coyoteNicknames.add(nickname);
+                        numCoyotes++;
+                        break;
+                    case "raccoon":
+                        raccoonNicknames.add(nickname);
+                        numRaccoons++;
+                        break;
+                    case "beaver":
+                        beaverNicknames.add(nickname);
+                        numBeavers++;
+                        break;
+                    case "fox":
+                        foxNicknames.add(nickname);
+                        numFoxes++;
+                        break;
+                    case "porcupine":
+                        porcupineNicknames.add(nickname);
+                        numPorcupines++;
+                        break;
+                    default:
+                        break;
+                }
             }
-            
-            ResultSet rsRaccoons = myStmt.executeQuery("SELECT COUNT(*) FROM ANIMALS WHERE AnimalSpecies = 'raccoon'");
-            if (rsRaccoons.next()) {
-                numRaccoons = rsRaccoons.getInt(1);
-            }
-            
-            ResultSet rsBeavers = myStmt.executeQuery("SELECT COUNT(*) FROM ANIMALS WHERE AnimalSpecies = 'beaver'");
-            if (rsBeavers.next()) {
-                numBeavers = rsBeavers.getInt(1);
-            }
-            
-            ResultSet rsFoxes = myStmt.executeQuery("SELECT COUNT(*) FROM ANIMALS WHERE AnimalSpecies = 'fox'");
-            if (rsFoxes.next()) {
-                numFoxes = rsFoxes.getInt(1);
-            }
-            
-            ResultSet rsPorcupines = myStmt.executeQuery("SELECT COUNT(*) FROM ANIMALS WHERE AnimalSpecies = 'porcupine'");
-            if (rsPorcupines.next()) {
-                numPorcupines = rsPorcupines.getInt(1);
-            }
-            
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
-    public static int getNumCoyotes() {
-        return numCoyotes;
-    }
+    public int getNumCoyotes() { return numCoyotes;}
+    public int getNumBeavers() { return numBeavers;}
+    public int getNumFoxes() { return numFoxes;}
+    public int getNumRaccoons() { return numRaccoons; }
+    public int getNumPorcupines() { return numPorcupines;}
 
-
-    public static int getNumBeavers() {
-        return numBeavers;
-    }
-
-    public static int getNumFoxes() {
-        return numFoxes;
-    }
-    public static int getNumRaccoons() {
-        return numRaccoons;
-    }
-
-    public static int getNumPorcupines() {
-        return numPorcupines;
-    }
+    public List<String> getCoyoteNicknames() { return coyoteNicknames;}   
+    public List<String> getFoxNicknames() { return foxNicknames; }   
+    public List<String> getPorcupineNicknames() { return porcupineNicknames; }  
+    public List<String> getRaccoonNicknames() { return raccoonNicknames; }      
+    public List<String> getBeaverNicknames() { return beaverNicknames; }
 
     public void close() {
         try {
@@ -114,16 +116,6 @@ public class Animal {
 
     public void setAnimalSpecies(String animalSpecies) {
         AnimalSpecies = animalSpecies;
-    }
-
-    public static void main(String[] args) {
-        Animal animal = new Animal();
-        System.out.println(Animal.getNumCoyotes());
-        System.out.println(Animal.getNumBeavers());
-        System.out.println(Animal.getNumFoxes());
-        System.out.println(Animal.getNumRaccoons());
-        System.out.println(Animal.getNumPorcupines());
-        animal.close();
     }
 }
 

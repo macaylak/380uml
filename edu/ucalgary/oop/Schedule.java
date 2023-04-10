@@ -16,9 +16,7 @@ public class Schedule {
 
     private  Connection dbConnect;
 
-    private static HashMap<Integer, Integer> minutesLeftMap;
     static HashMap<Integer, List<Map<String, String>>> mainHashmapWithTasksAndStartHours;
-    private List<Integer> EmptyStartHours;
 
     public Schedule() {
         Task task = new Task();
@@ -37,7 +35,7 @@ public class Schedule {
 
     public void createConnection() {
         try {
-            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "sqlpassword");
+            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "ensf380", "ensf380");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -78,140 +76,104 @@ public class Schedule {
         Schedule.mainHashmapWithTasksAndStartHours = taskMap;
     }
 
-    public  void insertFeedingCoyotesToHashmap(int StartHour, int feedingDuration, int NumAnimal) {
-        int startHour = StartHour;
-        int duration = feedingDuration;
-        int numAnimal = NumAnimal;
-        String description = "Feeding " + numAnimal + " coyotes";
-
+    public void insertFeedingCoyotesToHashmap(int startHour, int feedingDuration, int numAnimal, List<String> coyoteNicknames) {
+        String coyoteNames = String.join(", ", coyoteNicknames);
+        String description = "Feeding - Coyote (" + numAnimal + ": " + coyoteNames + ")";
+    
         // Create a new task map for the feeding task
         Map<String, String> task = new HashMap<>();
         task.put("Description", description);
-        task.put("Duration", Integer.toString(duration));
-
+        task.put("Duration", Integer.toString(feedingDuration));
+    
         // Get the task list for the specified start hour from the main hashmap
         List<Map<String, String>> taskList = mainHashmapWithTasksAndStartHours.getOrDefault(startHour, new ArrayList<>());
-
+    
         // Add the new feeding task to the task list
         taskList.add(task);
-
+    
         // Update the main hashmap with the modified task list
         mainHashmapWithTasksAndStartHours.put(startHour, taskList);
-
     }
-
-    //only one task of feeding is given to insert into hashmap at a time
-    public static void insertFeedingFoxToHashmap(int StartHour, int feedingDuration, int NumAnimal) {
-
-        int startHour = StartHour;
-        int duration = feedingDuration;
-        int numAnimal = NumAnimal;
-        String description = "Feeding " + numAnimal + " foxes";
-
+    
+    public void insertFeedingFoxToHashmap(int startHour, int feedingDuration, int numAnimal, List<String> foxNicknames) {
+        String foxNames = String.join(", ", foxNicknames);
+        String description = "Feeding - Fox (" + numAnimal + ": " + foxNames + ")";
+        
         // Create a new task map for the feeding task
         Map<String, String> task = new HashMap<>();
         task.put("Description", description);
-        task.put("Duration", Integer.toString(duration));
-
+        task.put("Duration", Integer.toString(feedingDuration));
+        
         // Get the task list for the specified start hour from the main hashmap
         List<Map<String, String>> taskList = mainHashmapWithTasksAndStartHours.getOrDefault(startHour, new ArrayList<>());
-
+        
         // Add the new feeding task to the task list
         taskList.add(task);
-
+        
         // Update the main hashmap with the modified task list
         mainHashmapWithTasksAndStartHours.put(startHour, taskList);
     }
 
-    public static void insertFeedingBeaversToHashmap(int StartHour, int feedingDuration, int NumAnimal) {
-        int startHour = StartHour;
-        int duration = feedingDuration;
-        int numAnimal = NumAnimal;
-        String description = "Feeding " + numAnimal + " beavers";
-
+    public void insertFeedingBeaversToHashmap(int startHour, int feedingDuration, int numAnimal, List<String> beaverNicknames) {
+        String beaverNames = String.join(", ", beaverNicknames);
+        String description = "Feeding - Beaver (" + numAnimal + ": " + beaverNames + ")";
+    
         // Create a new task map for the feeding task
         Map<String, String> task = new HashMap<>();
         task.put("Description", description);
-        task.put("Duration", Integer.toString(duration));
-
+        task.put("Duration", Integer.toString(feedingDuration));
+    
         // Get the task list for the specified start hour from the main hashmap
         List<Map<String, String>> taskList = mainHashmapWithTasksAndStartHours.getOrDefault(startHour, new ArrayList<>());
-
+    
         // Add the new feeding task to the task list
         taskList.add(task);
-
+    
         // Update the main hashmap with the modified task list
         mainHashmapWithTasksAndStartHours.put(startHour, taskList);
-    }
+    }    
 
-    public static void insertFeedingRaccoonsToHashmap(int StartHour, int feedingDuration, int NumAnimal) {
-        int startHour = StartHour;
-        int duration = feedingDuration;
-        int numAnimal = NumAnimal;
-        String description = "Feeding " + numAnimal + " raccoons";
-
+    public void insertFeedingPorcupinesToHashmap(int startHour, int feedingDuration, int numAnimal, List<String> porcupineNicknames) {
+        String porcupineNames = String.join(", ", porcupineNicknames);
+        String description = "Feeding - Porcupine (" + numAnimal + ": " + porcupineNames + ")";
+        
         // Create a new task map for the feeding task
         Map<String, String> task = new HashMap<>();
         task.put("Description", description);
-        task.put("Duration", Integer.toString(duration));
-
+        task.put("Duration", Integer.toString(feedingDuration));
+        
         // Get the task list for the specified start hour from the main hashmap
         List<Map<String, String>> taskList = mainHashmapWithTasksAndStartHours.getOrDefault(startHour, new ArrayList<>());
-
+        
         // Add the new feeding task to the task list
         taskList.add(task);
-
+        
         // Update the main hashmap with the modified task list
         mainHashmapWithTasksAndStartHours.put(startHour, taskList);
     }
+    
 
-    public  void insertFeedingPorcupinesToHashmap(int StartHour, int feedingDuration, int NumAnimal) {
-        int startHour = StartHour;
-        int duration = feedingDuration;
-        int numAnimal = NumAnimal;
-        String description = "Feeding " + numAnimal + " porcupines";
-
+    public void insertFeedingRaccoonsToHashmap(int startHour, int feedingDuration, int numAnimal, List<String> raccoonNames) {
+        String names = String.join(", ", raccoonNames);
+        String description = "Feeding - Raccoon (" + numAnimal + ": " + names + ")";
+        
         // Create a new task map for the feeding task
         Map<String, String> task = new HashMap<>();
         task.put("Description", description);
-        task.put("Duration", Integer.toString(duration));
-
+        task.put("Duration", Integer.toString(feedingDuration));
+        
         // Get the task list for the specified start hour from the main hashmap
         List<Map<String, String>> taskList = mainHashmapWithTasksAndStartHours.getOrDefault(startHour, new ArrayList<>());
-
+        
         // Add the new feeding task to the task list
         taskList.add(task);
-
+        
         // Update the main hashmap with the modified task list
         mainHashmapWithTasksAndStartHours.put(startHour, taskList);
-
-    }
-
-    public static HashMap<Integer, Integer> getMinutesLeftMap(HashMap<Integer, List<Map<String, String>>> taskMap) {
-        HashMap<Integer, Integer> minutesLeftMap = new HashMap<>();
-        for (int i = 0; i < 24; i++) {
-            if (taskMap.containsKey(i)) {
-                int totalDuration = 0;
-                List<Map<String, String>> taskList = taskMap.get(i);
-                for (Map<String, String> task : taskList) {
-                    totalDuration += Integer.parseInt(task.get("Duration"));
-                }
-                if (totalDuration < 60) {
-                    int minutesLeft = 60 - totalDuration;
-                    minutesLeftMap.put(i, minutesLeft);
-                } else {
-                    minutesLeftMap.put(i, 0);
-                }
-            } else {
-                minutesLeftMap.put(i, 60);
-            }
-        }
-        Schedule.minutesLeftMap = minutesLeftMap;
-        return minutesLeftMap;
     }
 
     public static void addCleaningTimesToHashmap(Schedule db) {
-        HashMap<Integer, Integer> minutesLeftmap = Schedule.getMinutesLeftMap(Schedule.getMainHashmapWithTasksandStartHours());
+        HashMap<Integer, Integer> minutesLeftmap = getMinutesLeftMap(Schedule.getMainHashmapWithTasksandStartHours());
         Set<AnimalType> insertedAnimals = new HashSet<>();
     
         for (int startHour = 0; startHour < 24; startHour++) {
@@ -266,19 +228,25 @@ public class Schedule {
     }
     
 
-    // test insertFeedingCoyotesToHashmap
-    // public static void main(String[] args) {
-    //     Schedule db = new Schedule();
-    //     // test insertFeedingCoyotesToHashmap
-    //     Task task = new Task();
-    //     task.feedingTimeCoyote(db);
-
-    //     // print out the main hashmap
-    //     System.out.println("mainHashmapWithTasksAndStartHours: " + mainHashmapWithTasksAndStartHours);
-
-        
-
-    // }
-
-
+    public static HashMap<Integer, Integer> getMinutesLeftMap(HashMap<Integer, List<Map<String, String>>> taskMap) {
+        HashMap<Integer, Integer> minutesLeftMap = new HashMap<>();
+        for (int i = 0; i < 24; i++) {
+            if (taskMap.containsKey(i)) {
+                int totalDuration = 0;
+                List<Map<String, String>> taskList = taskMap.get(i);
+                for (Map<String, String> task : taskList) {
+                    totalDuration += Integer.parseInt(task.get("Duration"));
+                }
+                if (totalDuration < 60) {
+                    int minutesLeft = 60 - totalDuration;
+                    minutesLeftMap.put(i, minutesLeft);
+                } else {
+                    minutesLeftMap.put(i, 0);
+                }
+            } else {
+                minutesLeftMap.put(i, 60);
+            }
+        }
+        return minutesLeftMap;
+    }
 }

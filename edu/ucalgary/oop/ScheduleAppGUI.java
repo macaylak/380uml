@@ -62,15 +62,16 @@ public class ScheduleAppGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Create a new Extracting_database object to extract data from the database
                 Schedule db = new Schedule();
+                Animal animalInfo = new Animal();
                 db.createConnection();
                 Task Task = new Task();
 
                 // Call feedingTimeFox() method and pass db as a parameter
-                Task.feedingTimeCoyote(db);
-                // Task.feedingTimePorcupine(db);
-                // Task.feedingTimeBeaver(db);
-                // Task.feedingTimeRaccoon(db);
-                // Task.feedingTimeFox(db);
+                Task.feedingTimeCoyote(db, animalInfo);
+                Task.feedingTimePorcupine(db, animalInfo);
+                Task.feedingTimeBeaver(db, animalInfo);
+                Task.feedingTimeRaccoon(db, animalInfo);
+                Task.feedingTimeFox(db, animalInfo);
                 Schedule.addCleaningTimesToHashmap(db);
 
                 // if an hour contains more than 120 minutes of tasks, display the error message

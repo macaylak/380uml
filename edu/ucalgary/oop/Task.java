@@ -12,6 +12,7 @@ public class Task {
     private int feedingTimeFox;
     private Task resultsTask;
 
+
     public Task() {
         createConnection();
         extractTaskTable();
@@ -19,7 +20,7 @@ public class Task {
 
     public void createConnection() {
         try {
-            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "sqlpassword");
+            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "ensf380", "ensf380");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -49,10 +50,10 @@ public class Task {
         return Schedule.mainHashmapWithTasksAndStartHours;
     }
     
-    public static void feedingTimeCoyote(Schedule db) {
+    public static void feedingTimeCoyote(Schedule db, Animal animalInfo) {
         HashMap<Integer, Integer> minutesLeftmap = Schedule.getMinutesLeftMap(Schedule.getMainHashmapWithTasksandStartHours());
-    
-        int numCoyotes = Animal.getNumCoyotes();
+        int numCoyotes = animalInfo.getNumCoyotes();
+        List<String> coyoteNicknames = animalInfo.getCoyoteNicknames();
         int feedingPrepTime = AnimalType.COYOTE.getFeedingPrepTime();
         int feedingTimePerCoyote = AnimalType.COYOTE.getFeedingTime();
     
@@ -70,16 +71,153 @@ public class Task {
     
         if (numCoyotesInHour19 > 0) {
             int totalFeedingTimeInHour19 = numCoyotesInHour19 * feedingTimePerCoyote + feedingPrepTime;
-            db.insertFeedingCoyotesToHashmap(19, totalFeedingTimeInHour19, numCoyotesInHour19);
+            db.insertFeedingCoyotesToHashmap(19, totalFeedingTimeInHour19, numCoyotesInHour19, coyoteNicknames.subList(0, numCoyotesInHour19));
         }
         if (numCoyotesInHour20 > 0) {
             int totalFeedingTimeInHour20 = numCoyotesInHour20 * feedingTimePerCoyote + feedingPrepTime;
-            db.insertFeedingCoyotesToHashmap(20, totalFeedingTimeInHour20, numCoyotesInHour20);
+            db.insertFeedingCoyotesToHashmap(20, totalFeedingTimeInHour20, numCoyotesInHour20, coyoteNicknames.subList(numCoyotesInHour19, numCoyotesInHour19 + numCoyotesInHour20));
         }
         if (numCoyotesInHour21 > 0) {
             int totalFeedingTimeInHour21 = numCoyotesInHour21 * feedingTimePerCoyote + feedingPrepTime;
-            db.insertFeedingCoyotesToHashmap(21, totalFeedingTimeInHour21, numCoyotesInHour21);
+            db.insertFeedingCoyotesToHashmap(21, totalFeedingTimeInHour21, numCoyotesInHour21, coyoteNicknames.subList(numCoyotesInHour19 + numCoyotesInHour20, numCoyotesInHour19 + numCoyotesInHour20 + numCoyotesInHour21));
         }
+    }
+
+    public void feedingTimeFox(Schedule db, Animal animalInfo) {
+        HashMap<Integer, Integer> minutesLeftmap = Schedule.getMinutesLeftMap(Schedule.getMainHashmapWithTasksandStartHours());
+    
+        int numFoxes = animalInfo.getNumFoxes();
+        List<String> foxNicknames = animalInfo.getFoxNicknames();
+        int feedingPrepTime = AnimalType.FOX.getFeedingPrepTime();
+        int feedingTimePerFox = AnimalType.FOX.getFeedingTime();
+    
+        int minutesLeft0 = minutesLeftmap.getOrDefault(0, 0);
+        int minutesLeft1 = minutesLeftmap.getOrDefault(1, 0);
+        int minutesLeft2 = minutesLeftmap.getOrDefault(2, 0);
+    
+        int numFoxesInHour0 = Math.min(numFoxes, (minutesLeft0 - feedingPrepTime) / feedingTimePerFox);
+        numFoxes -= numFoxesInHour0;
+    
+        int numFoxesInHour1 = Math.min(numFoxes, (minutesLeft1 - feedingPrepTime) / feedingTimePerFox);
+        numFoxes -= numFoxesInHour1;
+    
+        int numFoxesInHour2 = Math.min(numFoxes, (minutesLeft2 - feedingPrepTime) / feedingTimePerFox);
+    
+        if (numFoxesInHour0 > 0) {
+            int totalFeedingTimeInHour0 = numFoxesInHour0 * feedingTimePerFox + feedingPrepTime;
+            db.insertFeedingFoxToHashmap(0, totalFeedingTimeInHour0, numFoxesInHour0, foxNicknames.subList(0, numFoxesInHour0));
+        }
+        if (numFoxesInHour1 > 0) {
+            int totalFeedingTimeInHour1 = numFoxesInHour1 * feedingTimePerFox + feedingPrepTime;
+            db.insertFeedingFoxToHashmap(1, totalFeedingTimeInHour1, numFoxesInHour1, foxNicknames.subList(numFoxesInHour0, numFoxesInHour0 + numFoxesInHour1));
+        }
+        if (numFoxesInHour2 > 0) {
+            int totalFeedingTimeInHour2 = numFoxesInHour2 * feedingTimePerFox + feedingPrepTime;
+            db.insertFeedingFoxToHashmap(2, totalFeedingTimeInHour2, numFoxesInHour2, foxNicknames.subList(numFoxesInHour0 + numFoxesInHour1, numFoxesInHour0 + numFoxesInHour1 + numFoxesInHour2));
+        }
+    }
+
+    public void feedingTimePorcupine(Schedule db, Animal animalInfo) {
+        HashMap<Integer, Integer> minutesLeftmap = Schedule.getMinutesLeftMap(Schedule.getMainHashmapWithTasksandStartHours());
+        int numPorcupines = animalInfo.getNumPorcupines();
+        List<String> porcupineNicknames = animalInfo.getPorcupineNicknames();
+        int feedingPrepTime = AnimalType.PORCUPINE.getFeedingPrepTime();
+        int feedingTimePerPorcupine = AnimalType.PORCUPINE.getFeedingTime();
+    
+        int minutesLeft19 = minutesLeftmap.getOrDefault(19, 0);
+        int minutesLeft20 = minutesLeftmap.getOrDefault(20, 0);
+        int minutesLeft21 = minutesLeftmap.getOrDefault(21, 0);
+    
+        int numPorcupineInHour19 = Math.min(numPorcupines, (minutesLeft19 - feedingPrepTime) / feedingTimePerPorcupine);
+        numPorcupines -= numPorcupineInHour19;
+    
+        int numPorcupineInHour20 = Math.min(numPorcupines, (minutesLeft20 - feedingPrepTime) / feedingTimePerPorcupine);
+        numPorcupines -= numPorcupineInHour20;
+    
+        int numPorcupineInHour21 = Math.min(numPorcupines, (minutesLeft21 - feedingPrepTime) / feedingTimePerPorcupine);
+    
+        if (numPorcupineInHour19 > 0) {
+            int totalFeedingTimeInHour19 = numPorcupineInHour19 * feedingTimePerPorcupine + feedingPrepTime;
+            db.insertFeedingPorcupinesToHashmap(19, totalFeedingTimeInHour19, numPorcupineInHour19, porcupineNicknames.subList(0, numPorcupineInHour19));
+        }
+        if (numPorcupineInHour20 > 0) {
+            int totalFeedingTimeInHour20 = numPorcupineInHour20 * feedingTimePerPorcupine + feedingPrepTime;
+            db.insertFeedingPorcupinesToHashmap(20, totalFeedingTimeInHour20, numPorcupineInHour20, porcupineNicknames.subList(numPorcupineInHour19, numPorcupineInHour19 + numPorcupineInHour20));
+        }
+        if (numPorcupineInHour21 > 0) {
+            int totalFeedingTimeInHour21 = numPorcupineInHour21 * feedingTimePerPorcupine + feedingPrepTime;
+            db.insertFeedingPorcupinesToHashmap(21, totalFeedingTimeInHour21, numPorcupineInHour21, porcupineNicknames.subList(numPorcupineInHour19 + numPorcupineInHour20, numPorcupineInHour19 + numPorcupineInHour20 + numPorcupineInHour21));
+        }
+    }
+
+    public void feedingTimeBeaver(Schedule db, Animal animalInfo) {
+        HashMap<Integer, Integer> minutesLeftmap = Schedule.getMinutesLeftMap(Schedule.getMainHashmapWithTasksandStartHours());
+    
+        int numBeavers = animalInfo.getNumBeavers();
+        List<String> beaverNicknames = animalInfo.getBeaverNicknames();
+        int feedingPrepTime = AnimalType.BEAVER.getFeedingPrepTime();
+        int feedingTimePerBeaver = AnimalType.BEAVER.getFeedingTime();
+    
+        int minutesLeft8 = minutesLeftmap.getOrDefault(8, 0);
+        int minutesLeft9 = minutesLeftmap.getOrDefault(9, 0);
+        int minutesLeft10 = minutesLeftmap.getOrDefault(10, 0);
+    
+        int numBeaversInHour8 = Math.min(numBeavers, (minutesLeft8 - feedingPrepTime) / feedingTimePerBeaver);
+        numBeavers -= numBeaversInHour8;
+    
+        int numBeaversInHour9 = Math.min(numBeavers, (minutesLeft9 - feedingPrepTime) / feedingTimePerBeaver);
+        numBeavers -= numBeaversInHour9;
+    
+        int numBeaversInHour10 = Math.min(numBeavers, (minutesLeft10 - feedingPrepTime) / feedingTimePerBeaver);
+    
+        if (numBeaversInHour8 > 0) {
+            int totalFeedingTimeInHour8 = numBeaversInHour8 * feedingTimePerBeaver + feedingPrepTime;
+            db.insertFeedingBeaversToHashmap(8, totalFeedingTimeInHour8, numBeaversInHour8, beaverNicknames.subList(0, numBeaversInHour8));
+        }
+        if (numBeaversInHour9 > 0) {
+            int totalFeedingTimeInHour9 = numBeaversInHour9 * feedingTimePerBeaver + feedingPrepTime;
+            db.insertFeedingBeaversToHashmap(9, totalFeedingTimeInHour9, numBeaversInHour9, beaverNicknames.subList(numBeaversInHour8, numBeaversInHour8 + numBeaversInHour9));
+        }
+        if (numBeaversInHour10 > 0) {
+            int totalFeedingTimeInHour10 = numBeaversInHour10 * feedingTimePerBeaver + feedingPrepTime;
+            db.insertFeedingBeaversToHashmap(10, totalFeedingTimeInHour10, numBeaversInHour10, beaverNicknames.subList(numBeaversInHour8 + numBeaversInHour9, numBeaversInHour8 + numBeaversInHour9 + numBeaversInHour10));
+        }
+    
+    }
+    
+    
+    public void feedingTimeRaccoon(Schedule db, Animal animalInfo) {
+        HashMap<Integer, Integer> minutesLeftmap = Schedule.getMinutesLeftMap(Schedule.getMainHashmapWithTasksandStartHours());
+            
+        int numRaccoons = animalInfo.getNumRaccoons();
+        List<String> raccoonNicknames = animalInfo.getRaccoonNicknames();
+        int feedingPrepTime = AnimalType.RACCOON.getFeedingPrepTime();
+        int feedingTimePerRaccoon = AnimalType.RACCOON.getFeedingTime();
+            
+        int minutesLeft0 = minutesLeftmap.getOrDefault(0, 0);
+        int minutesLeft1 = minutesLeftmap.getOrDefault(1, 0);
+        int minutesLeft2 = minutesLeftmap.getOrDefault(2, 0);
+            
+        int numRaccoonsInHour0 = Math.min(numRaccoons, (minutesLeft0 - feedingPrepTime) / feedingTimePerRaccoon);
+        numRaccoons -= numRaccoonsInHour0;
+            
+        int numRaccoonsInHour1 = Math.min(numRaccoons, (minutesLeft1 - feedingPrepTime) / feedingTimePerRaccoon);
+        numRaccoons -= numRaccoonsInHour1;
+            
+        int numRaccoonsInHour2 = Math.min(numRaccoons, (minutesLeft2 - feedingPrepTime) / feedingTimePerRaccoon);
+            
+        if (numRaccoonsInHour0 > 0) {
+            int totalFeedingTimeInHour0 = numRaccoonsInHour0 * feedingTimePerRaccoon + feedingPrepTime;
+            db.insertFeedingRaccoonsToHashmap(0, totalFeedingTimeInHour0, numRaccoonsInHour0, raccoonNicknames.subList(0, numRaccoonsInHour0));
+         }
+        if (numRaccoonsInHour1 > 0) {
+            int totalFeedingTimeInHour1 = numRaccoonsInHour1 * feedingTimePerRaccoon + feedingPrepTime;
+            db.insertFeedingRaccoonsToHashmap(1, totalFeedingTimeInHour1, numRaccoonsInHour1, raccoonNicknames.subList(numRaccoonsInHour0, numRaccoonsInHour0 + numRaccoonsInHour1));
+        }
+        if (numRaccoonsInHour2 > 0) {
+            int totalFeedingTimeInHour2 = numRaccoonsInHour2 * feedingTimePerRaccoon + feedingPrepTime;
+            db.insertFeedingRaccoonsToHashmap(2, totalFeedingTimeInHour2, numRaccoonsInHour2, raccoonNicknames.subList(numRaccoonsInHour0 + numRaccoonsInHour1, numRaccoonsInHour0 + numRaccoonsInHour1 + numRaccoonsInHour2));
+         }
     }
 
 
@@ -98,41 +236,6 @@ public class Task {
         } else {
             return false;
         }
-    }    
-
-    // public void updateScheduleWithFeedingTimes(Schedule db) {
-    //     feedingTimeCoyote(db);
-    //     // feedingTimeRaccoon(db);
-    //     // feedingTimeBeaver(db);
-    //     // feedingTimePorcupine(db);
-    //     // feedingTimeFox(db);
-    // }
-    
-
-    public static void main(String[] args) {
-        Schedule db = new Schedule();
-        Task t = new Task();
-    
-        // Call feedingTimeFox() method and pass db as a parameter
-        Task.feedingTimeCoyote(db);
-        Schedule.addCleaningTimesToHashmap(db);
-       
-        for (Integer startHour : Schedule.getMainHashmapWithTasksandStartHours().keySet()) {
-            System.out.println();
-            String startHourString = startHour + ":00";
-            if (Schedule.checkDuration(Schedule.getMainHashmapWithTasksandStartHours(), startHour)) {
-                startHourString += " [+ backup volunteer]";
-            }
-            System.out.println(startHourString);
-            for (Map<String, String> task : Schedule.getMainHashmapWithTasksandStartHours().get(startHour)) {
-                if (task.get("AnimalNickname") == null) {
-                    System.out.println("* " + task.get("Description"));
-                    continue;
-                }else{
-                    System.out.println("* " + task.get("Description") + " (" + task.get("AnimalNickname") + ")");
-                }
-            }
-        }
-    }   
+    }     
 }
     
