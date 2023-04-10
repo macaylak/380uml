@@ -14,13 +14,15 @@ import java.util.Set;
 
 public class Schedule {
 
-    private static Connection dbConnect;
+    private  Connection dbConnect;
 
     private static HashMap<Integer, Integer> minutesLeftMap;
     static HashMap<Integer, List<Map<String, String>>> mainHashmapWithTasksAndStartHours;
     private List<Integer> EmptyStartHours;
 
     public Schedule() {
+        Task task = new Task();
+        task.extractTaskTable();
         createConnection();
         createTaskMap();//have mainhashmap
     }
@@ -76,7 +78,7 @@ public class Schedule {
         Schedule.mainHashmapWithTasksAndStartHours = taskMap;
     }
 
-    public static void insertFeedingCoyotesToHashmap(int StartHour, int feedingDuration, int NumAnimal) {
+    public  void insertFeedingCoyotesToHashmap(int StartHour, int feedingDuration, int NumAnimal) {
         int startHour = StartHour;
         int duration = feedingDuration;
         int numAnimal = NumAnimal;
@@ -95,6 +97,7 @@ public class Schedule {
 
         // Update the main hashmap with the modified task list
         mainHashmapWithTasksAndStartHours.put(startHour, taskList);
+
     }
 
     //only one task of feeding is given to insert into hashmap at a time
@@ -162,7 +165,7 @@ public class Schedule {
         mainHashmapWithTasksAndStartHours.put(startHour, taskList);
     }
 
-    public static void insertFeedingPorcupinesToHashmap(int StartHour, int feedingDuration, int NumAnimal) {
+    public  void insertFeedingPorcupinesToHashmap(int StartHour, int feedingDuration, int NumAnimal) {
         int startHour = StartHour;
         int duration = feedingDuration;
         int numAnimal = NumAnimal;
@@ -230,7 +233,7 @@ public class Schedule {
     }
     
     public static HashMap<Integer, List<Map<String, String>>> getMainHashmapWithTasksandStartHours(){
-        return Schedule.mainHashmapWithTasksAndStartHours;
+        return mainHashmapWithTasksAndStartHours;
     }
 
     public void insertCleaningToHashMap(int startHour, int cleaningTime, AnimalType animalType) {
@@ -261,4 +264,21 @@ public class Schedule {
             return false;
         }
     }
+    
+
+    // test insertFeedingCoyotesToHashmap
+    // public static void main(String[] args) {
+    //     Schedule db = new Schedule();
+    //     // test insertFeedingCoyotesToHashmap
+    //     Task task = new Task();
+    //     task.feedingTimeCoyote(db);
+
+    //     // print out the main hashmap
+    //     System.out.println("mainHashmapWithTasksAndStartHours: " + mainHashmapWithTasksAndStartHours);
+
+        
+
+    // }
+
+
 }
